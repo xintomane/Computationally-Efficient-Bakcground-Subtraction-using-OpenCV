@@ -44,40 +44,16 @@ def get_opencv_result(video_to_process):
         
 
         opening = cv.morphologyEx(frame,cv.MORPH_OPEN,kernel,iterations = 2)
-       # closing= cv.morphologyEx(frame,cv.MORPH_CLOSE,kernel,iterations = 2)
-       # erode = cv.morphologyEx(frame, cv.MORPH_ERODE, kernel,iterations = 2)
-        #dst = cv.GaussianBlur(frame,(3,3),cv.BORDER_DEFAULT)
+      
 
-        opening_MOG_before = MOG.apply(opening)
-        frame_erode_before = cv.erode(frame, kernel, iterations=2)
-        frame_dilate_before  = cv.dilate(frame_erode_before, kernel, iterations=2)
-        separate_filters_before =MOG.apply(frame_dilate_before)
-        #test4 = MOG.apply(dst)
+        opening_MOG = MOG.apply(opening)
 
-        fgMask_erode = cv.erode(fgMask_MOG, kernel, iterations=2)
-        fgMask_dilate = cv.dilate(fgMask_erode, kernel, iterations=2)
 
-        fgMask_dilate[np.abs(fgMask_dilate) < 250] = 0
-
-        #apply mrphological 'opening' filter
-        opening_MOG = cv.morphologyEx(fgMask_MOG,cv.MORPH_OPEN,kernel)
-        #opening_MOG2 = cv.morphologyEx(fgMask_MOG2,cv.MORPH_OPEN,kernel)
-        #opening_KNN = cv.morphologyEx(fgMask_KNN,cv.MORPH_OPEN,kernel)
-
-        #apply mrphological 'closing' filter
-        closing_MOG = cv.morphologyEx(fgMask_MOG,cv.MORPH_CLOSE,kernel)
-       
-        median = cv.medianBlur(fgMask_MOG2,5)
         # show the current frame, foreground mask, subtracted result
         cv.imshow("Initial Frames", frame)
         cv.imshow("Foreground Masks MOG", fgMask_MOG)
-        cv.imshow("Opening after BGS", opening_MOG)
-        #cv.imshow("Foreground Masks MOG (Original)", fgMask_MOG)
-        cv.imshow("Morphological filters after BGS",fgMask_dilate)
-        cv.imshow("Opening before BGS", opening_MOG_before)
-        cv.imshow("Morphological filters before BGS", separate_filters_before)
-        #cv.imshow("Erode", test3)
-        #cv.imshow("Gaussian Blur", test4)
+        cv.imshow("Morphological Filter", opening_MOG)
+
 
 
         keyboard = cv.waitKey(30)
@@ -86,8 +62,7 @@ def get_opencv_result(video_to_process):
             cv.imwrite("MOG.png",fgMask_MOG) 
             cv.imwrite("frame.png",frame)
             cv.imwrite("opening.png",opening_MOG)
-            cv.imwrite("closing.png",closing_MOG)
-            cv.imwrite("separate.png",fgMask_dilate)
+
         
         if keyboard == ord('q') or keyboard == 27:
             break
