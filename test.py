@@ -6,7 +6,7 @@ import glob
 
 kernel = cv.getStructuringElement(cv.MORPH_RECT, (3,3))
 GSOC = cv.bgsegm.createBackgroundSubtractorGSOC()
-KNN = cv.createBackgroundSubtractorKNN(100,400,True)
+KNN = cv.createBackgroundSubtractorKNN(100,400,False)
 MOG2 = cv.createBackgroundSubtractorMOG2(300,400,False)
 MOG = cv.bgsegm.createBackgroundSubtractorMOG(300)
 LSBP = cv.bgsegm.createBackgroundSubtractorLSBP(nSamples=20,LSBPRadius=16,Tlower=2.0,Tupper=32.0,Tinc= 1.0, Tdec= 0.05, Rscale= 10.0, Rincdec=0.005, LSBPthreshold=8)
@@ -39,7 +39,7 @@ def main():
         return gt, f
 
 
-    path = './real\Video_005'
+    path = './real\Video_002'
     path_dir = find_relevant_dirs(path)
     print(len(path_dir))
     for seq in path_dir:
@@ -75,8 +75,20 @@ def main():
         cv.imshow('LSBP', LSBP_fgMask)
         cv.imshow('GMG', GMG_fgMask)
         cv.imshow('CNT', CNT_fgMask)
-        k = cv.waitKey(0)
-        if k == 27:
+
+        keyboard = cv.waitKey(0)
+
+        if keyboard == ord('s'):
+            cv.imwrite("MOG_v5.png",MOG_fgMask) 
+            cv.imwrite("MOG2_v5.png",MOG2_fgMask) 
+            cv.imwrite("GSOC_v5.png",GSOC_fgMask) 
+            cv.imwrite("KNN_v5.png",KNN_fgMask) 
+            cv.imwrite("CNT_v5.png",CNT_fgMask) 
+            cv.imwrite("LSBP_v5.png",LSBP_fgMask) 
+            cv.imwrite("GMG_v5.png",GMG_fgMask) 
+            #cv.imwrite("final_results\FRAME_v5.png",frame) 
+
+        if keyboard == ord('q') or keyboard == 27:
             break
 
 
