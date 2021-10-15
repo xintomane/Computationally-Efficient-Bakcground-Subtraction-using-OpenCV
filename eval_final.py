@@ -13,14 +13,14 @@ kernel = cv.getStructuringElement(cv.MORPH_RECT, (3,3))
 
 # https://github.com/opencv/opencv_contrib/blob/master/modules/bgsegm/samples/evaluation.py
 ALGORITHMS_TO_EVALUATE = [
-    (cv.createBackgroundSubtractorMOG2(), "MOG2"),
-    (cv.createBackgroundSubtractorKNN(), "KNN"),
-    (cv.bgsegm.createBackgroundSubtractorLSBP(), "LSBP"),
+    (cv.createBackgroundSubtractorMOG2(300,400,False), "MOG2"),
+    (cv.createBackgroundSubtractorKNN(100,400,False), "KNN"),
+    (cv.bgsegm.createBackgroundSubtractorMOG(300), 'MOG'),
+    (cv.bgsegm.createBackgroundSubtractorGMG(10,.8), 'GMG'),
     (cv.bgsegm.createBackgroundSubtractorGSOC(), "GSOC"),
-    (cv.bgsegm.createBackgroundSubtractorMOG(), 'MOG'),
+    (cv.bgsegm.createBackgroundSubtractorLSBP(nSamples=20,LSBPRadius=16,Tlower=2.0,Tupper=32.0,Tinc= 1.0, Tdec= 0.05, Rscale= 10.0, Rincdec=0.005, LSBPthreshold=8), "LSBP"),
     (cv.bgsegm.createBackgroundSubtractorCNT(), 'CNT'),
-    (cv.bgsegm.createBackgroundSubtractorGMG(), 'GMG'),
-    (cv.bgsegm.createBackgroundSubtractorGMG(), 'Morph')
+    
 ]
 
 def contains_relevant_files(root):
@@ -41,8 +41,8 @@ def find_relevant_dirs(root):
 
 def load_sequence(root):
     gt_dir, frames_dir = os.path.join(root, 'groundtruth'), os.path.join(root, 'input')
-    gt = sorted(glob.glob(os.path.join(gt_dir, '*.bmp')))
-    f = sorted(glob.glob(os.path.join(frames_dir, '*.bmp')))
+    gt = sorted(glob.glob(os.path.join(gt_dir, '*.png'))) #png for cd.net dataset bmp for BMC dataset
+    f = sorted(glob.glob(os.path.join(frames_dir, '*.jpg'))) #jpg for cd.net dataset bmp for BMC dataset
     assert(len(gt) == len(f))
     return gt, f
 
@@ -94,14 +94,14 @@ def evaluate_on_sequence(seq, summary):
     print('=== %s:%s ===' % (category, video_name))
 
     for algo, algo_name in ALGORITHMS_TO_EVALUATE:
-        print('Algorithm name: %s' % algo_name)
+        #print('Algorithm name: %s' % algo_name)
         sec_per_step, precision, recall, f1, accuracy = evaluate_algorithm(gt, frames, algo)
-        print('Average accuracy: %.3f' % accuracy)
-        print('Average precision: %.3f' % precision)
-        print('Average recall: %.3f' % recall)
-        print('Average F1: %.3f' % f1)
-        print('Average sec. per step: %.4f' % sec_per_step)
-        print('')
+        #print('Average accuracy: %.3f' % accuracy)
+        #print('Average precision: %.3f' % precision)
+        #print('Average recall: %.3f' % recall)
+        #print('Average F1: %.3f' % f1)
+        #print('Average sec. per step: %.4f' % sec_per_step)
+        #print('')
 
         if category not in summary:
             summary[category] = {}
@@ -115,7 +115,7 @@ def main():
     parser.add_argument('--algorithm', help='Test particular algorithm instead of all.')
     
     args = parser.parse_args()
-    dataset_path='./BMC_dataset\Video_005'
+    dataset_path='./baseline'
     
     dataset_dirs = find_relevant_dirs(dataset_path)
     print(len(dataset_dirs))
@@ -135,26 +135,23 @@ def main():
         for algo_name in summary[category]:
             summary[category][algo_name] = np.mean(summary[category][algo_name], axis=0)
     
-    for category in summary:
-        print('=== SUMMARY for %s (Precision, Recall, F1, Accuracy,Duration) ===' % category)
-        for algo_name in summary[category]:
-            print('%05s: %.3f %.3f %.3f %.3f %.4f' % ((algo_name,) + tuple(summary[category][algo_name]))) 
-
+    #for category in summary:
+    #    print('=== SUMMARY for %s (Precision, Recall, F1, Accuracy,Duration) ===' % category)
+        
+    #    for algo_name in summary[category]:
+    #        print('%05s: %.3f %.3f %.3f %.3f %.4f' % ((algo_name,) + tuple(summary[category][algo_name]))) 
     with open('eval_results.txt', 'w') as f:
-        #for line in lines:
-        #    f.write(line)
-        #    f.write('\n')
 
-
-   
         for category in summary:
             f.write('=== SUMMARY for %s (Precision, Recall, F1, Accuracy,Duration) ===' % category)
             f.write('\n')
             for algo_name in summary[category]:
                 f.write('%05s: %.3f %.3f %.3f %.3f %.4f' % ((algo_name,) + tuple(summary[category][algo_name]))) 
                 f.write('\n')
-         
+        
     
+
+
 
 if __name__ == '__main__':
     main()
