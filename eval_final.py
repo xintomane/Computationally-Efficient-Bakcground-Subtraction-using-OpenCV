@@ -18,7 +18,7 @@ ALGORITHMS_TO_EVALUATE = [
     (cv.bgsegm.createBackgroundSubtractorMOG(300), 'MOG'),
     (cv.bgsegm.createBackgroundSubtractorGMG(10,.8), 'GMG'),
     (cv.bgsegm.createBackgroundSubtractorGSOC(), "GSOC"),
-    (cv.bgsegm.createBackgroundSubtractorLSBP(nSamples=20,LSBPRadius=16,Tlower=2.0,Tupper=32.0,Tinc= 1.0, Tdec= 0.05, Rscale= 10.0, Rincdec=0.005, LSBPthreshold=8), "LSBP"),
+    (cv.bgsegm.createBackgroundSubtractorLSBP(nSamples=10,LSBPRadius=16,Tlower=2.0,Tupper=32.0,Tinc= 1.0, Tdec= 0.05, Rscale= 10.0, Rincdec=0.005, LSBPthreshold=8), "LSBP"),
     (cv.bgsegm.createBackgroundSubtractorCNT(), 'CNT'),
     
 ]
