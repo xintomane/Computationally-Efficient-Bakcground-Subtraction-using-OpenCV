@@ -18,9 +18,9 @@ def get_opencv_result(video_to_process):
         exit(0)
 
     # instantiate background subtraction
-    KNN = cv.createBackgroundSubtractorKNN(detectShadows=False)
-    MOG2 = cv.createBackgroundSubtractorMOG2(detectShadows=False)
-    MOG = cv.bgsegm.createBackgroundSubtractorMOG()
+    KNN = cv.createBackgroundSubtractorKNN(100,400,False,)
+    MOG2 = cv.createBackgroundSubtractorMOG2(300,400,False)
+    MOG = cv.bgsegm.createBackgroundSubtractorMOG(300,4)
     
 
     
